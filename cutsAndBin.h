@@ -132,6 +132,9 @@ int kPPMCUps3S = 10 ;
 int kAAMCUps1S = 11 ;
 int kAAMCUps2S = 12 ;
 int kAAMCUps3S = 13 ;
+int kPAMCUps1S = 14 ;
+int kPAMCUps2S = 15 ;
+int kPAMCUps3S = 16 ;
 int kPPAADATASIMUL = 20 ; // 2 and 0 simultaneous fit
 int kPPAADATAPeriSIMUL = 60 ; // 6 and 0 simultaneous fit
 
@@ -151,6 +154,9 @@ TString getCollID( int collid ) {
   else if ( collid == kAAMCUps1S ) return "AA_MC_Ups1S";
   else if ( collid == kAAMCUps2S ) return "AA_MC_Ups2S";
   else if ( collid == kAAMCUps3S ) return "AA_MC_Ups3S";
+  else if ( collid == kPAMCUps1S ) return "PP_MC_Ups1S";
+  else if ( collid == kPAMCUps2S ) return "PP_MC_Ups2S";
+  else if ( collid == kPAMCUps3S ) return "PP_MC_Ups3S";
   else if ( collid == kPPAADATASIMUL ) return "PP_AA_DATA_SIMUL";
   else if ( collid == kPPAADATAPeriSIMUL ) return "PP_AA_DATA_PeriL1_SIMUL";
 
