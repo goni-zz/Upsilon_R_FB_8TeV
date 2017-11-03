@@ -57,7 +57,7 @@ void onia2ySkim_Pbp( int nevt = -1,
   else if(fileID == kAAMCUps2S) inf_func = new TFile("compareDataMc/ratioDataMC_AA_DATA_2sState.root","read");
 
   TF1* wFunc[nYBins+1];
-  //wFunc[1] = (TF1*) inf_func -> Get("dataMcRatio");
+ //wFunc[1] = (TF1*) inf_func -> Get("dataMcRatio");
   
   if (fileID == kPPDATA) {
     fname = "/home/samba/OniaTree/Onia5TeV/ppData/OniaTree_DoubleMu_Run2015E-PromptReco-v1_Run_262157_262328.root";
@@ -223,6 +223,7 @@ void onia2ySkim_Pbp( int nevt = -1,
   Int_t           Centrality;
   ULong64_t       HLTriggers;
   Int_t           Reco_QQ_size;
+  Int_t           Ntracks;
   TClonesArray    *Reco_QQ_4mom;
   TClonesArray    *Reco_QQ_mupl_4mom;
   TClonesArray    *Reco_QQ_mumi_4mom;
@@ -234,6 +235,7 @@ void onia2ySkim_Pbp( int nevt = -1,
   TBranch        *b_zVtx;   //!
   TBranch        *b_Centrality;   //!
   TBranch        *b_HLTriggers;   //!
+  TBranch        *b_Ntracks;   //!
   TBranch        *b_Reco_QQ_size;   //!
   TBranch        *b_Reco_QQ_4mom;   //!
   TBranch        *b_Reco_QQ_mupl_4mom;   //!
@@ -259,6 +261,7 @@ void onia2ySkim_Pbp( int nevt = -1,
   mytree->SetBranchAddress("zVtx", &zVtx, &b_zVtx);
   mytree->SetBranchAddress("Centrality", &Centrality, &b_Centrality);
   mytree->SetBranchAddress("HLTriggers", &HLTriggers, &b_HLTriggers);
+  mytree->SetBranchAddress("Ntracks", &Ntracks, &b_Ntracks);
   mytree->SetBranchAddress("Reco_QQ_size", &Reco_QQ_size, &b_Reco_QQ_size);
   mytree->SetBranchAddress("Reco_QQ_4mom", &Reco_QQ_4mom, &b_Reco_QQ_4mom);
   //  mytree->GetBranch("Reco_QQ_mupl_4mom")->SetAutoDelete(kFALSE);
@@ -329,17 +332,32 @@ void onia2ySkim_Pbp( int nevt = -1,
   Float_t         Reco_QQ_mumi_dzErr[200];   //[Reco_QQ_size]
   Float_t         Reco_mu_dz[200];   //[Reco_mu_size]
   Float_t         Reco_mu_dzErr[200];   //[Reco_mu_size]
+  Float_t         SumET_HFplusEta4;   //
+  Float_t         SumET_HFminusEta4;   //
+  Float_t         SumET_HFplus;   //
+  Float_t         SumET_HFminus;   //
+  Float_t         SumET_HF;   //
   TBranch        *b_Reco_QQ_mupl_dz;   //!
   TBranch        *b_Reco_QQ_mumi_dz;   //!
   TBranch        *b_Reco_QQ_mupl_dzErr;   //!
   TBranch        *b_Reco_QQ_mumi_dzErr;   //!
   TBranch        *b_Reco_mu_dz;   //!
+  TBranch        *b_SumET_HFplusEta4;   //!
+  TBranch        *b_SumET_HFminusEta4;   //!
+  TBranch        *b_SumET_HFplus;   //!
+  TBranch        *b_SumET_HFminus;   //!
+  TBranch        *b_SumET_HF;   //!
   TBranch        *b_Reco_mu_dzErr;   //!
   mytree->SetBranchAddress("Reco_QQ_mupl_dz", Reco_QQ_mupl_dz, &b_Reco_QQ_mupl_dz);
   mytree->SetBranchAddress("Reco_QQ_mumi_dz", Reco_QQ_mumi_dz, &b_Reco_QQ_mumi_dz);
   mytree->SetBranchAddress("Reco_QQ_mupl_dzErr", Reco_QQ_mupl_dzErr, &b_Reco_QQ_mupl_dzErr);
   mytree->SetBranchAddress("Reco_QQ_mumi_dzErr", Reco_QQ_mumi_dzErr, &b_Reco_QQ_mumi_dzErr);
   mytree->SetBranchAddress("Reco_mu_dz", Reco_mu_dz, &b_Reco_mu_dz);
+  mytree->SetBranchAddress("SumET_HFplusEta4", &SumET_HFplusEta4, &b_SumET_HFplusEta4);
+  mytree->SetBranchAddress("SumET_HFminusEta4", &SumET_HFminusEta4, &b_SumET_HFminusEta4);
+  mytree->SetBranchAddress("SumET_HFplus", &SumET_HFplus, &b_SumET_HFplus);
+  mytree->SetBranchAddress("SumET_HFminus", &SumET_HFminus, &b_SumET_HFminus);
+  mytree->SetBranchAddress("SumET_HF", &SumET_HF, &b_SumET_HF);
   mytree->SetBranchAddress("Reco_mu_dzErr", Reco_mu_dzErr, &b_Reco_mu_dzErr);
   Int_t           Reco_QQ_mupl_nTrkWMea[200];   //[Reco_QQ_size]
   Int_t           Reco_QQ_mumi_nTrkWMea[200];   //[Reco_QQ_size]
@@ -508,11 +526,15 @@ void onia2ySkim_Pbp( int nevt = -1,
   RooRealVar* eta2Var  = (RooRealVar*)eta1Var->Clone("eta2");
   RooRealVar* cBinVar   = new RooRealVar("cBin","Centrality bin", -100,500,"");
   RooRealVar* evtWeight = new RooRealVar("weight","pt weight", 0, 10000,"");
+  RooRealVar* hfpluseta4 = new RooRealVar("hfpluseta4","HF pluseta4", 0, 2000,"GeV/c^{2}");
+  RooRealVar* hfminuseta4 = new RooRealVar("hfminuseta4","HF minuseta4", 0, 2000,"GeV/c^{2}");
+  RooRealVar* ntrackvar = new RooRealVar("ntrack","Ntrack", 0, 10000,"");
   //  RooArgSet* argSet    = new RooArgSet(*massVar, *ptVar, *yVar, *ep2Var, *pt1Var, *eta1Var, *pt2Var, *eta2Var);
-  RooArgSet* argSet    = new RooArgSet(*massVar, *ptVar, *yVar, *pt1Var, *pt2Var, *evtWeight);
-  if ( (fileID == kAAMC) || (fileID == kAADATA) || (fileID == kAADATAPeri) || (fileID == kAADATACentL3) || (fileID == kPAMC) || (fileID == kPADATA) || (fileID==kAAMCUps1S) || (fileID==kAAMCUps2S)|| (fileID==kAAMCUps3S) )
-    argSet->add(*cBinVar);
-
+  RooArgSet* argSet;
+  if((fileID ==kPPDATA) || (fileID ==kPPMCUps1S) || (fileID ==kPPMCUps2S) ||(fileID ==kPPMCUps3S))
+  { argSet = new RooArgSet(*massVar, *ptVar, *yVar, *pt1Var, *pt2Var, *hfpluseta4, *hfminuseta4, *ntrackvar);}
+  else
+  { argSet = new RooArgSet(*massVar, *ptVar, *yVar, *pt1Var, *pt2Var, *hfpluseta4, *hfminuseta4, *ntrackvar,*cBinVar);}
   
   RooDataSet* dataSet  = new RooDataSet("dataset", " a dataset", *argSet);
 
@@ -637,7 +659,7 @@ void onia2ySkim_Pbp( int nevt = -1,
 	}
 	// MC pT weight :  
 	if ( (fileID == kPPMCUps1S) || (fileID == kPPMCUps2S) || (fileID == kPPMCUps3S) ||  (fileID == kAAMCUps1S) || (fileID == kAAMCUps2S) || (fileID == kAAMCUps3S))  {
-	    dmGen.weight = dmGen.weight0 ;//* wFunc[1]->Eval(dmGen.pt); 
+	    dmGen.weight = dmGen.weight0; //* wFunc[1]->Eval(dmGen.pt); 
 	}		 
 	
 	
@@ -810,6 +832,9 @@ void onia2ySkim_Pbp( int nevt = -1,
       eta2Var->setVal( (double)dm.eta2 ) ;
       cBinVar->setVal( (double)dm.cBin ) ;
       evtWeight->setVal( (double)dm.weight ) ;
+      hfpluseta4->setVal( (double) SumET_HFplusEta4) ;
+      hfminuseta4->setVal( (double) SumET_HFminusEta4) ;
+      ntrackvar->setVal( (double) Ntracks) ;
       dataSet->add( *argSet);
       mmTree->Fill();
     } // end of dimuon loop
