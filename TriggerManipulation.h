@@ -52,17 +52,15 @@ hltIndex getTrigIndex( int trigId, TString fname ) {
       TString theName = hStats->GetXaxis()->GetBinLabel(ii); 
       
       if ( trigId == kL1DoubleMu0 ) { 
-	if ( theName == "HLT_HIL1DoubleMu0_v1" )  {               ret.ind1 = ii-2;  
-	  cout << "HLT_HIL1DoubleMu0_v1 : ind1 = 2^" << ret.ind1 << endl;     }
-//Santona
+	if ( theName == "HLT_PAL1DoubleMuOpen_v1" )  {               ret.ind1 = ii-2;  
+	  cout << "HLT_PAL1DoubleMuOpen_v1 : ind1 = 2^" << ret.ind1 << endl;     }
 /*	if ( theName == "HLT_HIL1DoubleMu0_2HF_v1" )   {          ret.ind2 = ii-2;
 	  cout << "HLT_HIL1DoubleMu0_2HF_v1 : ind2 = 2^" << ret.ind2 << endl;     }
 	if ( theName == "HLT_HIL1DoubleMu0_2HF0_v1" )   { 	ret.ind3 = ii-2;
 	  cout << "HLT_HIL1DoubleMu0_2HF0_v1 : ind3 = 2^" << ret.ind3 << endl;     }
 	if ( theName == "HLT_HIL1DoubleMu0ForPPRef_v1" )   { 	ret.ind4 = ii-2;
 	  cout << "HLT_HIL1DoubleMu0ForPPRef_v1 (pp Reference) : ind4 = 2^" << ret.ind4 << endl;     }
-// */
-      }
+*/      }
 
       if ( trigId == kL1DoubleMuOpen2016 ) { 
 	if ( theName == "HLT_PAL1DoubleMuOpen_v1" )  {               ret.ind1 = ii-2;
@@ -107,20 +105,20 @@ bool isTrigMatched(hltIndex hltind, ULong64_t hltInput) {
   if ( hltind.doTrigSel == 0 ) 
     ret = true ; 
   else { 
-    ULong64_t ind1_ = (ULong64_t)(pow(2.0,hltind.ind1));
-/*    ULong64_t ind2_ = (ULong64_t)(pow(2,hltind.ind2));
+    ULong64_t ind1_ = (ULong64_t)(pow(2.,hltind.ind1));
+  /*  ULong64_t ind2_ = (ULong64_t)(pow(2,hltind.ind2));
     ULong64_t ind3_ = (ULong64_t)(pow(2,hltind.ind3));
     ULong64_t ind4_ = (ULong64_t)(pow(2,hltind.ind4));
-*/    
+    */
     if (  (ind1_>0) && ( (hltInput&ind1_)==ind1_ ) )     
       ret = true;
-/*    if (  (ind2_>0) && ( (hltInput&ind2_)==ind2_ ) )     
+  /*  if (  (ind2_>0) && ( (hltInput&ind2_)==ind2_ ) )     
       ret = true;
     if (  (ind3_>0) && ( (hltInput&ind3_)==ind3_ ) )     
       ret = true;
     if (  (ind4_>0) && ( (hltInput&ind4_)==ind4_ ) )     
-      ret = true;
-*/  }
+      ret = true;*/
+  }
   return ret;
 }
 

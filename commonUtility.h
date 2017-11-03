@@ -69,10 +69,10 @@ void debug() {
 
 
 bool acceptance(double muPt, double muEta) {
-  return ( 	( (TMath::Abs(muEta) < 1.2) && (muPt >=3.3) ) || 
-		( (TMath::Abs(muEta) >= 1.2)  && (TMath::Abs(muEta) < 2.1) && (muPt >= 3.93-1.11*(TMath::Abs(muEta))) ) || 
-		( (TMath::Abs(muEta) >= 2.1)  && (TMath::Abs(muEta) < 2.4) && (muPt >= 1.3)  
-    ) ) ; 
+  return ( 	( (TMath::Abs(muEta) < 1.2) && (muPt >3.5) ) || 
+		( (TMath::Abs(muEta) > 1.2)  && (TMath::Abs(muEta) < 2.1) && (muPt > 5.77-1.89*(TMath::Abs(muEta))) ) || 
+		( (TMath::Abs(muEta) > 2.1)  && (TMath::Abs(muEta) < 2.4) && (muPt > 1.8) )  
+		) ; 
   
   /*  return ( TMath::Abs(muEta) < 2.4 &&
       ((TMath::Abs(muEta) < 1.3 && muPt >=3.3) ||
