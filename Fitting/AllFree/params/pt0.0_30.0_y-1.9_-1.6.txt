@@ -1,0 +1,2 @@
+N, alpha, sigma1s, M0, f, X double CB for data 
+ else if ( binMatched( 4, 0, 30, -1.9, -1.6) ) {setSignalParMC(2.14797, 1.52717, 0.172803, 9.44238, 0.234522, 0.592815}
